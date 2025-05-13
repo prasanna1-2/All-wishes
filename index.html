@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>लक्ष्मीको आशिर्वाद</title>
+  <style>
+    body {
+      font-family: 'Mangal', sans-serif;
+      text-align: center;
+      background: linear-gradient(to bottom, #fff8dc, #f9fbe7);
+      color: #4e342e;
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    img {
+      max-width: 300px;
+      margin-top: 15px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 2px solid #d4af37;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+    .sender {
+      font-size: 24px;
+      color: #c62828;
+      animation: glow 1.5s ease-in-out infinite alternate;
+      margin-top: 15px;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #f44336; }
+      to { text-shadow: 0 0 20px #ff1744; }
+    }
+    .firework {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: red;
+      animation: explode 1s ease-out forwards;
+    }
+    @keyframes explode {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: translate(calc(-50px + 100px * var(--x)), calc(-50px + 100px * var(--y))) scale(0.5); opacity: 0; }
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #6d4c41;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>लक्ष्मीको आशिर्वाद</h2>
+  <img src="laxmi.gif" alt="लक्ष्मी देवी" />
+
+  <div class="message">
+    लक्ष्मी माता तपाईंलाई आशीर्वाद दिनुहोस्,<br> तपाईंको जीवन उज्यालो बनोस्।
+  </div>
+
+  <div class="sender" id="senderName" style="display:none;"></div>
+
+  <div style="margin-top: 30px;">
+    <input type="text" id="nameInput" placeholder="तपाईंको नाम लेख्नुहोस्" />
+    <br>
+    <button onclick="generateAndShare()">Okay</button>
+  </div>
+
+  <div id="linkContainer" style="margin-top: 20px;"></div>
+
+  <div class="footer">© 2025 लक्ष्मीको आशिर्वाद</div>
+
+  <script>
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    function generateAndShare() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) {
+        alert("कृपया आफ्नो नाम लेख्नुहोस्।");
+        return;
+      }
+      const url = `${window.location.origin}${window.location.pathname}?from=${encodeURIComponent(name)}`;
+
+      document.getElementById('linkContainer').innerHTML =
+        `<p>शेयर गर्न लिङ्क:</p><input type="text" value="${url}" style="width:90%;" readonly onclick="this.select()" />`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'लक्ष्मीको आशिर्वाद पठाउनुहोस्',
+          text: `${name} बाट लक्ष्मीको आशिर्वाद पठाउनुहोस्`,
+          url: url
+        })
+        .then(() => console.log('Shared'))
+        .catch(err => console.log('Share failed:', err));
+      } else {
+        alert("यो फिचर तपाईंको ब्राउजरमा उपलब्ध छैन। कृपया लिङ्क manually copy गर्नुहोस्।");
+      }
+    }
+
+    function createFirework() {
+      const fw = document.createElement('div');
+      fw.className = 'firework';
+      fw.style.left = Math.random() * window.innerWidth + 'px';
+      fw.style.top = Math.random() * window.innerHeight + 'px';
+      fw.style.backgroundColor = ['#ff1744', '#ff9100', '#00e676'][Math.floor(Math.random()*3)];
+      fw.style.setProperty('--x', Math.random());
+      fw.style.setProperty('--y', Math.random());
+      document.body.appendChild(fw);
+      setTimeout(() => fw.remove(), 1000);
+    }
+
+    const fromName = getQueryParam("from");
+    if (fromName) {
+      const senderEl = document.getElementById("senderName");
+      senderEl.textContent = `- ${decodeURIComponent(fromName)} बाट लक्ष्मीको आशिर्वाद`;
+      senderEl.style.display = "block";
+      setInterval(createFirework, 200);
+    }
+  </script>
+</body>
+</html>
